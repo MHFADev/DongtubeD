@@ -60,6 +60,24 @@ async function fetchTikTokVideo(url) {
   return data.data;
 }
 
+// Auto Download Video File
+async function autoDownloadVideo(videoUrl, filename) {
+  try {
+    // Create temporary link and trigger download
+    const a = document.createElement('a');
+    a.href = videoUrl;
+    a.download = filename || 'tiktok-video.mp4';
+    a.target = '_blank';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  } catch (error) {
+    console.error('Download error:', error);
+    // Fallback: open in new tab
+    window.open(videoUrl, '_blank');
+  }
+}
+
 // URL Validation
 function isValidTikTokUrl(url) {
   return /^https?:\/\/(www\.)?(tiktok\.com|vm\.tiktok\.com|vt\.tiktok\.com)/i.test(url);
@@ -86,6 +104,14 @@ function displayResult(data) {
   const playCount = data.play_count || 0;
   const likeCount = data.digg_count || 0;
 
+  if (!downloadUrl) {
+    showError('Video tidak tersedia untuk diunduh');
+    return;
+  }
+
+  // Generate filename
+  const filename = `tiktok-${author}-${Date.now()}.mp4`;
+
   let html = '';
 
   // Thumbnail
@@ -111,23 +137,31 @@ function displayResult(data) {
   html += `</div>`;
 
   // Download Button
-  if (downloadUrl) {
-    html += `
-      <a href="${escapeHtml(downloadUrl)}" 
-         class="download-link-btn" 
-         download 
-         target="_blank"
-         rel="noopener noreferrer">
-        📥 Download Video
-      </a>
-    `;
-  } else {
-    showError('Video tidak tersedia untuk diunduh');
-    return;
-  }
+  html += `
+    <button class="download-link-btn" id="autoDownloadBtn">
+      📥 Download Video
+    </button>
+  `;
 
   resultContent.innerHTML = html;
   resultSection.classList.remove('hidden');
+
+  // Add click event for auto download
+  const autoDownloadButton = document.getElementById('autoDownloadBtn');
+  autoDownloadButton.addEventListener('click', () => {
+    autoDownloadButton.textContent = '⏳ Mengunduh...';
+    autoDownloadButton.disabled = true;
+    
+    autoDownloadVideo(downloadUrl, filename);
+    
+    setTimeout(() => {
+      autoDownloadButton.textContent = '✅ Download Dimulai!';
+      setTimeout(() => {
+        autoDownloadButton.textContent = '📥 Download Lagi';
+        autoDownloadButton.disabled = false;
+      }, 2000);
+    }, 500);
+  });
 
   downloadBtn.disabled = false;
   urlInput.disabled = false;
