@@ -1,14 +1,11 @@
-/* ============================
-   CSS RESET & BASE STYLES
-   ============================ */
-
+/* Reset & Base */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-html {
+html, body {
   height: 100%;
   width: 100%;
 }
@@ -25,20 +22,17 @@ body {
   line-height: 1.6;
 }
 
-/* ============================
-   CONTAINER
-   ============================ */
-
+/* Container */
 .container {
   width: 100%;
   max-width: 600px;
-  animation: fadeIn 0.6s ease-in;
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@keyframes fadeIn {
+@keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(30px);
   }
   to {
     opacity: 1;
@@ -46,13 +40,16 @@ body {
   }
 }
 
-/* ============================
-   HEADER SECTION
-   ============================ */
-
+/* Header */
 .header {
   text-align: center;
   margin-bottom: 40px;
+  animation: fadeIn 1s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .header__title {
@@ -60,20 +57,24 @@ body {
   font-weight: 700;
   color: #ffffff;
   margin-bottom: 10px;
-  text-shadow: 0 0 20px rgba(255, 204, 0, 0.3);
+  text-shadow: 0 0 30px rgba(255, 204, 0, 0.4);
+  animation: glow 3s ease-in-out infinite;
+}
+
+@keyframes glow {
+  0%, 100% { text-shadow: 0 0 20px rgba(255, 204, 0, 0.3); }
+  50% { text-shadow: 0 0 40px rgba(255, 204, 0, 0.6); }
 }
 
 .header__subtitle {
   font-size: 1rem;
   font-weight: 300;
   color: #b0b0b0;
-  letter-spacing: 0.5px;
+  opacity: 0;
+  animation: fadeIn 1s ease 0.3s forwards;
 }
 
-/* ============================
-   INPUT SECTION
-   ============================ */
-
+/* Input Section */
 .input-section {
   margin-bottom: 30px;
 }
@@ -82,6 +83,18 @@ body {
   display: flex;
   gap: 10px;
   margin-bottom: 20px;
+  animation: slideIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s backwards;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .input-field {
@@ -94,17 +107,23 @@ body {
   border-radius: 8px;
   color: #e0e0e0;
   outline: none;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .input-field::placeholder {
   color: #666;
+  transition: color 0.3s ease;
 }
 
 .input-field:focus {
   border-color: #ffcc00;
-  box-shadow: 0 0 8px rgba(255, 204, 0, 0.4);
+  box-shadow: 0 0 12px rgba(255, 204, 0, 0.5), 0 4px 20px rgba(0, 0, 0, 0.3);
   background-color: #222;
+  transform: translateY(-2px);
+}
+
+.input-field:focus::placeholder {
+  color: #888;
 }
 
 .download-btn {
@@ -117,19 +136,39 @@ body {
   border: 1px solid #ffcc00;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+}
+
+.download-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 204, 0, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.download-btn:hover:not(:disabled)::before {
+  width: 300px;
+  height: 300px;
 }
 
 .download-btn:hover:not(:disabled) {
   background-color: #ffcc00;
   color: #0d0d0d;
-  box-shadow: 0 0 12px rgba(255, 204, 0, 0.6);
-  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(255, 204, 0, 0.7), 0 8px 25px rgba(0, 0, 0, 0.4);
+  transform: translateY(-3px);
 }
 
 .download-btn:active:not(:disabled) {
-  transform: translateY(0);
+  transform: translateY(-1px);
 }
 
 .download-btn:disabled {
@@ -137,26 +176,29 @@ body {
   cursor: not-allowed;
 }
 
-/* ============================
-   LOADING INDICATOR
-   ============================ */
+.btn-text {
+  position: relative;
+  z-index: 1;
+}
 
+/* Loading */
 .loading-indicator {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 15px;
   padding: 30px;
-  background-color: rgba(26, 26, 26, 0.8);
+  background-color: rgba(26, 26, 26, 0.95);
   border: 1px solid #ffcc00;
   border-radius: 12px;
-  animation: fadeInScale 0.4s ease;
+  animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
 }
 
-@keyframes fadeInScale {
+@keyframes scaleIn {
   from {
     opacity: 0;
-    transform: scale(0.9);
+    transform: scale(0.8);
   }
   to {
     opacity: 1;
@@ -174,22 +216,34 @@ body {
 }
 
 @keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+  to { transform: rotate(360deg); }
 }
 
 .loading-indicator p {
   color: #e0e0e0;
   font-size: 0.95rem;
+  animation: pulse 1.5s ease-in-out infinite;
 }
 
-/* ============================
-   RESULT SECTION
-   ============================ */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
 
+/* Result Card */
 .result-section {
-  animation: fadeInScale 0.5s ease;
+  animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .result-card {
@@ -197,7 +251,13 @@ body {
   border: 1px solid #ffcc00;
   border-radius: 12px;
   padding: 25px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 30px rgba(255, 204, 0, 0.2), 0 8px 40px rgba(0, 0, 0, 0.4);
+  animation: cardGlow 2s ease-in-out infinite;
+}
+
+@keyframes cardGlow {
+  0%, 100% { box-shadow: 0 0 20px rgba(255, 204, 0, 0.2), 0 8px 40px rgba(0, 0, 0, 0.4); }
+  50% { box-shadow: 0 0 40px rgba(255, 204, 0, 0.3), 0 8px 40px rgba(0, 0, 0, 0.4); }
 }
 
 .result-content {
@@ -209,13 +269,26 @@ body {
 .video-thumbnail {
   width: 100%;
   border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  animation: imageZoom 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes imageZoom {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .video-info {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  animation: fadeIn 0.8s ease 0.2s backwards;
 }
 
 .video-title {
@@ -236,6 +309,7 @@ body {
   gap: 20px;
   font-size: 0.85rem;
   color: #b0b0b0;
+  animation: fadeIn 0.8s ease 0.4s backwards;
 }
 
 .download-link-btn {
@@ -252,38 +326,69 @@ body {
   border: 1px solid #ffcc00;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: slideUp 0.8s ease 0.3s backwards;
+  position: relative;
+  overflow: hidden;
+}
+
+.download-link-btn::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.download-link-btn:hover::after {
+  width: 400px;
+  height: 400px;
 }
 
 .download-link-btn:hover {
   background-color: #ffd633;
-  box-shadow: 0 0 15px rgba(255, 204, 0, 0.7);
-  transform: translateY(-2px);
+  box-shadow: 0 0 25px rgba(255, 204, 0, 0.8), 0 8px 30px rgba(0, 0, 0, 0.4);
+  transform: translateY(-4px);
 }
 
 .download-link-btn:active {
-  transform: translateY(0);
+  transform: translateY(-2px);
 }
 
-/* ============================
-   ERROR SECTION
-   ============================ */
-
+/* Error */
 .error-section {
-  animation: fadeInScale 0.4s ease;
+  animation: shake 0.6s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
 }
 
 .error-card {
-  background-color: #1a1a1a;
+  background-color: rgba(26, 26, 26, 0.95);
   border: 1px solid #ff6b6b;
   border-radius: 12px;
   padding: 30px;
   text-align: center;
+  box-shadow: 0 0 20px rgba(255, 107, 107, 0.3), 0 8px 30px rgba(0, 0, 0, 0.5);
 }
 
 .error-icon {
   font-size: 3rem;
   margin-bottom: 15px;
+  animation: bounce 1s ease infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 
 .error-message {
@@ -303,24 +408,23 @@ body {
   border: 1px solid #ffcc00;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .try-again-btn:hover {
   background-color: #ffcc00;
   color: #0d0d0d;
-  box-shadow: 0 0 12px rgba(255, 204, 0, 0.6);
+  box-shadow: 0 0 15px rgba(255, 204, 0, 0.7);
+  transform: translateY(-2px);
 }
 
-/* ============================
-   FOOTER
-   ============================ */
-
+/* Footer */
 .footer {
   text-align: center;
   margin-top: 50px;
   padding-top: 20px;
   border-top: 1px solid #333;
+  animation: fadeIn 1.5s ease 0.5s backwards;
 }
 
 .footer p {
@@ -328,18 +432,12 @@ body {
   color: #666;
 }
 
-/* ============================
-   UTILITY CLASSES
-   ============================ */
-
+/* Utility */
 .hidden {
   display: none !important;
 }
 
-/* ============================
-   RESPONSIVE DESIGN
-   ============================ */
-
+/* Responsive */
 @media (max-width: 600px) {
   .header__title {
     font-size: 2rem;
