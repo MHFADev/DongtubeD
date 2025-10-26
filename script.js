@@ -236,11 +236,11 @@ function displayResult(data) {
   urlInput.disabled = false;
   
   // Download handler
-  downloadVideoBtn.onclick = () => startDownload(videoUrl, data.author?.unique_id || 'video');
+  downloadVideoBtn.onclick = () => startDownload(videoUrl, data.title || 'TikTok Video');
 }
 
 // Start Download with Progress
-async function startDownload(url, username) {
+async function startDownload(url, videoTitle) {
   downloadVideoBtn.disabled = true;
   downloadText.textContent = '⏳ Memproses...';
   downloadProgress.classList.remove('hidden');
@@ -254,10 +254,17 @@ async function startDownload(url, username) {
   }, 200);
   
   try {
+    // Sanitize filename - remove invalid characters
+    const sanitizedTitle = videoTitle
+      .replace(/[/\\?%*:|"<>]/g, '-')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .substring(0, 100);
+    
     // Trigger download
     const a = document.createElement('a');
     a.href = url;
-    a.download = `tiktok-${username}-${Date.now()}.mp4`;
+    a.download = `${sanitizedTitle}.mp4`;
     a.target = '_blank';
     document.body.appendChild(a);
     a.click();
