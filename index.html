@@ -10,14 +10,8 @@
   <link href="style.css" rel="stylesheet">
 </head>
 <body>
-  <!-- 3D Floating Background Animation -->
-  <div class="background-animation">
-    <div class="floating-shape"></div>
-    <div class="floating-shape"></div>
-    <div class="floating-shape"></div>
-    <div class="floating-shape"></div>
-    <div class="floating-shape"></div>
-  </div>
+  <!-- Three.js 3D Background Canvas -->
+  <canvas id="bg-canvas"></canvas>
 
   <!-- Main Container -->
   <div class="container">
@@ -73,8 +67,15 @@
       </div>
     </div>
 
+    <!-- Credit Footer -->
+    <div class="credit">
+      Made with ❤️ by <span class="highlight">Replit Agent</span> | Powered by <span class="highlight">Three.js</span>
+    </div>
+
   </div>
 
+  <!-- Three.js Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
