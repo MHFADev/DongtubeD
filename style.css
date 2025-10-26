@@ -1,0 +1,384 @@
+/* ============================
+   CSS RESET & BASE STYLES
+   ============================ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 100%);
+  color: #e0e0e0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  line-height: 1.6;
+}
+
+/* ============================
+   CONTAINER
+   ============================ */
+
+.container {
+  width: 100%;
+  max-width: 600px;
+  animation: fadeIn 0.6s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================
+   HEADER SECTION
+   ============================ */
+
+.header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.header__title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 10px;
+  text-shadow: 0 0 20px rgba(255, 204, 0, 0.3);
+}
+
+.header__subtitle {
+  font-size: 1rem;
+  font-weight: 300;
+  color: #b0b0b0;
+  letter-spacing: 0.5px;
+}
+
+/* ============================
+   INPUT SECTION
+   ============================ */
+
+.input-section {
+  margin-bottom: 30px;
+}
+
+.input-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.input-field {
+  flex: 1;
+  padding: 16px 20px;
+  font-size: 0.95rem;
+  font-family: 'Poppins', sans-serif;
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  color: #e0e0e0;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.input-field::placeholder {
+  color: #666;
+}
+
+.input-field:focus {
+  border-color: #ffcc00;
+  box-shadow: 0 0 8px rgba(255, 204, 0, 0.4);
+  background-color: #222;
+}
+
+.download-btn {
+  padding: 16px 32px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  background-color: #1a1a1a;
+  color: #ffcc00;
+  border: 1px solid #ffcc00;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.download-btn:hover:not(:disabled) {
+  background-color: #ffcc00;
+  color: #0d0d0d;
+  box-shadow: 0 0 12px rgba(255, 204, 0, 0.6);
+  transform: translateY(-2px);
+}
+
+.download-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.download-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ============================
+   LOADING INDICATOR
+   ============================ */
+
+.loading-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  padding: 30px;
+  background-color: rgba(26, 26, 26, 0.8);
+  border: 1px solid #ffcc00;
+  border-radius: 12px;
+  animation: fadeInScale 0.4s ease;
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #333;
+  border-top-color: #ffcc00;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-indicator p {
+  color: #e0e0e0;
+  font-size: 0.95rem;
+}
+
+/* ============================
+   RESULT SECTION
+   ============================ */
+
+.result-section {
+  animation: fadeInScale 0.5s ease;
+}
+
+.result-card {
+  background-color: #1a1a1a;
+  border: 1px solid #ffcc00;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.result-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.video-thumbnail {
+  width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+}
+
+.video-info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.video-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #ffffff;
+  line-height: 1.4;
+}
+
+.video-author {
+  font-size: 0.9rem;
+  color: #ffcc00;
+  font-weight: 500;
+}
+
+.video-stats {
+  display: flex;
+  gap: 20px;
+  font-size: 0.85rem;
+  color: #b0b0b0;
+}
+
+.download-link-btn {
+  display: inline-block;
+  width: 100%;
+  padding: 14px 24px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  background-color: #ffcc00;
+  color: #0d0d0d;
+  border: 1px solid #ffcc00;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.download-link-btn:hover {
+  background-color: #ffd633;
+  box-shadow: 0 0 15px rgba(255, 204, 0, 0.7);
+  transform: translateY(-2px);
+}
+
+.download-link-btn:active {
+  transform: translateY(0);
+}
+
+/* ============================
+   ERROR SECTION
+   ============================ */
+
+.error-section {
+  animation: fadeInScale 0.4s ease;
+}
+
+.error-card {
+  background-color: #1a1a1a;
+  border: 1px solid #ff6b6b;
+  border-radius: 12px;
+  padding: 30px;
+  text-align: center;
+}
+
+.error-icon {
+  font-size: 3rem;
+  margin-bottom: 15px;
+}
+
+.error-message {
+  color: #ff6b6b;
+  font-size: 1rem;
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.try-again-btn {
+  padding: 12px 28px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  background-color: #1a1a1a;
+  color: #ffcc00;
+  border: 1px solid #ffcc00;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.try-again-btn:hover {
+  background-color: #ffcc00;
+  color: #0d0d0d;
+  box-shadow: 0 0 12px rgba(255, 204, 0, 0.6);
+}
+
+/* ============================
+   FOOTER
+   ============================ */
+
+.footer {
+  text-align: center;
+  margin-top: 50px;
+  padding-top: 20px;
+  border-top: 1px solid #333;
+}
+
+.footer p {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+/* ============================
+   UTILITY CLASSES
+   ============================ */
+
+.hidden {
+  display: none !important;
+}
+
+/* ============================
+   RESPONSIVE DESIGN
+   ============================ */
+
+@media (max-width: 600px) {
+  .header__title {
+    font-size: 2rem;
+  }
+
+  .header__subtitle {
+    font-size: 0.9rem;
+  }
+
+  .input-group {
+    flex-direction: column;
+  }
+
+  .download-btn {
+    width: 100%;
+  }
+
+  .result-card {
+    padding: 20px;
+  }
+
+  .video-stats {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 400px) {
+  .header__title {
+    font-size: 1.75rem;
+  }
+
+  .input-field {
+    font-size: 0.9rem;
+    padding: 14px 16px;
+  }
+
+  .download-btn {
+    font-size: 0.9rem;
+    padding: 14px 24px;
+  }
+}
