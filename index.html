@@ -1,97 +1,80 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Download TikTok videos easily with our free online tool">
-  <title>TikTok Video Downloader</title>
-  
-  <!-- Google Fonts - Poppins -->
+  <title>TikTok Downloader</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  
-  <!-- Stylesheet -->
-  <link href="style.css" rel="stylesheet" type="text/css" />
-  
-  <!-- 
-    DEPLOYMENT INSTRUCTIONS:
-    1. On Replit: Simply host these three files (index.html, style.css, script.js) in the root directory
-    2. Configure a simple HTTP server workflow (e.g., Python's http.server on port 5000)
-    3. The app works entirely client-side, no backend needed
-    
-    KNOWN LIMITATIONS:
-    - CORS restrictions: Some browsers may block the API call if the API doesn't allow cross-origin requests
-    - API rate limiting: The public API may have rate limits or downtime
-    - No API key security: This is a public endpoint, fully exposed on client-side
-    - For production use, consider adding a backend proxy to avoid CORS and add rate limiting
-  -->
+  <link href="style.css" rel="stylesheet">
 </head>
-
 <body>
+  <!-- 3D Floating Background Animation -->
+  <div class="background-animation">
+    <div class="floating-shape"></div>
+    <div class="floating-shape"></div>
+    <div class="floating-shape"></div>
+    <div class="floating-shape"></div>
+    <div class="floating-shape"></div>
+  </div>
+
   <!-- Main Container -->
   <div class="container">
     
-    <!-- Header Section -->
-    <header class="header">
-      <h1 class="header__title">TikTok Video Downloader</h1>
-      <p class="header__subtitle">Download video TikTok tanpa watermark</p>
-    </header>
-
-    <!-- Input Section -->
-    <section class="input-section">
-      <div class="input-group">
+    <!-- Main Card -->
+    <div class="main-card">
+      <h1 class="title">TikTok Downloader</h1>
+      
+      <!-- Input Card -->
+      <div class="input-card">
         <input 
           type="text" 
           id="urlInput" 
-          class="input-field" 
-          placeholder="Masukkan URL TikTok (contoh: https://www.tiktok.com/@username/video/...)"
-          aria-label="TikTok URL input field"
+          class="url-input" 
+          placeholder="Paste TikTok URL..."
         />
-        <button 
-          id="downloadBtn" 
-          class="download-btn"
-          aria-label="Download video button"
-        >
-          <span class="btn-text">Download</span>
+        <button id="downloadBtn" class="btn-download">
+          <span>Download</span>
         </button>
       </div>
-      
-      <!-- Loading Indicator -->
-      <div id="loadingIndicator" class="loading-indicator hidden">
-        <div class="spinner"></div>
-        <p>Memproses video...</p>
-      </div>
-    </section>
 
-    <!-- Result Section -->
-    <section id="resultSection" class="result-section hidden">
-      <div class="result-card">
-        <div id="resultContent" class="result-content">
-          <!-- Dynamic content will be injected here by JavaScript -->
+      <!-- Loading -->
+      <div id="loading" class="loading hidden">
+        <div class="spinner"></div>
+        <p>Processing...</p>
+      </div>
+
+      <!-- Result Card -->
+      <div id="result" class="result-card hidden">
+        <img id="thumbnail" class="thumbnail" alt="Video">
+        <div class="info">
+          <h3 id="title" class="video-title"></h3>
+          <p id="author" class="author"></p>
+          <div id="stats" class="stats"></div>
+        </div>
+        <button id="downloadVideoBtn" class="btn-download-video">
+          <span id="downloadText">📥 Download Video</span>
+        </button>
+        <!-- Download Progress -->
+        <div id="downloadProgress" class="download-progress hidden">
+          <div class="progress-bar">
+            <div id="progressFill" class="progress-fill"></div>
+          </div>
+          <p id="progressText" class="progress-text">Downloading...</p>
         </div>
       </div>
-    </section>
 
-    <!-- Error Section -->
-    <section id="errorSection" class="error-section hidden">
-      <div class="error-card">
+      <!-- Error -->
+      <div id="error" class="error-card hidden">
         <div class="error-icon">⚠️</div>
-        <p id="errorMessage" class="error-message"></p>
-        <button id="tryAgainBtn" class="try-again-btn">Coba Lagi</button>
+        <p id="errorMsg"></p>
+        <button id="retryBtn" class="btn-retry">Try Again</button>
       </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-      <p>© 2025 TikTok Downloader | Gratis & Mudah Digunakan</p>
-    </footer>
+    </div>
 
   </div>
 
-  <!-- JavaScript -->
   <script src="script.js"></script>
 </body>
-
 </html>

@@ -1,215 +1,182 @@
-/**
- * TikTok Video Downloader - Frontend Only
- * API: dongtube.my.id
- */
-
 // DOM Elements
 const urlInput = document.getElementById('urlInput');
 const downloadBtn = document.getElementById('downloadBtn');
-const loadingIndicator = document.getElementById('loadingIndicator');
-const resultSection = document.getElementById('resultSection');
-const resultContent = document.getElementById('resultContent');
-const errorSection = document.getElementById('errorSection');
-const errorMessage = document.getElementById('errorMessage');
-const tryAgainBtn = document.getElementById('tryAgainBtn');
+const loading = document.getElementById('loading');
+const result = document.getElementById('result');
+const error = document.getElementById('error');
+const errorMsg = document.getElementById('errorMsg');
+const retryBtn = document.getElementById('retryBtn');
+const downloadVideoBtn = document.getElementById('downloadVideoBtn');
+const downloadText = document.getElementById('downloadText');
+const downloadProgress = document.getElementById('downloadProgress');
+const progressFill = document.getElementById('progressFill');
+const progressText = document.getElementById('progressText');
 
 // Event Listeners
 downloadBtn.addEventListener('click', handleDownload);
 urlInput.addEventListener('keypress', (e) => {
   if (e.key === 'Enter') handleDownload();
 });
-tryAgainBtn.addEventListener('click', resetForm);
+retryBtn.addEventListener('click', reset);
 
-// Main Download Handler
+// Main Handler
 async function handleDownload() {
   const url = urlInput.value.trim();
-
+  
   if (!url) {
-    showError('Masukkan URL TikTok terlebih dahulu');
+    showError('Masukkan URL TikTok');
     return;
   }
-
-  if (!isValidTikTokUrl(url)) {
-    showError('URL tidak valid. Gunakan link dari TikTok');
+  
+  if (!/^https?:\/\/(www\.)?(tiktok\.com|vm\.tiktok\.com|vt\.tiktok\.com)/i.test(url)) {
+    showError('URL tidak valid');
     return;
   }
-
+  
   showLoading();
-
+  
   try {
-    const videoData = await fetchTikTokVideo(url);
-    displayResult(videoData);
-  } catch (error) {
-    console.error('Error:', error);
-    showError('Video tidak dapat diunduh. Coba link lain');
+    const data = await fetchVideo(url);
+    displayResult(data);
+  } catch (err) {
+    showError('Gagal mengunduh video');
   }
 }
 
-// Fetch Video from API
-async function fetchTikTokVideo(url) {
-  const apiEndpoint = 'https://www.dongtube.my.id/api/d/tiktok';
-  const fullUrl = `${apiEndpoint}?url=${encodeURIComponent(url)}`;
-
-  const response = await fetch(fullUrl);
-  const data = await response.json();
-
+// Fetch Video
+async function fetchVideo(url) {
+  const res = await fetch(`https://www.dongtube.my.id/api/d/tiktok?url=${encodeURIComponent(url)}`);
+  const data = await res.json();
+  
   if (!data.success || !data.data) {
     throw new Error('Invalid response');
   }
-
+  
   return data.data;
 }
 
-// Auto Download Video File
-async function autoDownloadVideo(videoUrl, filename) {
+// Display Result
+function displayResult(data) {
+  hideAll();
+  
+  const thumbnail = document.getElementById('thumbnail');
+  const title = document.getElementById('title');
+  const author = document.getElementById('author');
+  const stats = document.getElementById('stats');
+  
+  thumbnail.src = data.cover || data.origin_cover || '';
+  title.textContent = data.title || 'TikTok Video';
+  author.textContent = '@' + (data.author?.nickname || data.author?.unique_id || 'Unknown');
+  
+  const views = data.play_count ? `👁️ ${formatNum(data.play_count)}` : '';
+  const likes = data.digg_count ? `❤️ ${formatNum(data.digg_count)}` : '';
+  stats.innerHTML = (views ? `<span>${views}</span>` : '') + (likes ? `<span>${likes}</span>` : '');
+  
+  const videoUrl = data.play || data.wmplay || '';
+  
+  if (!videoUrl) {
+    showError('Video tidak tersedia');
+    return;
+  }
+  
+  result.classList.remove('hidden');
+  downloadBtn.disabled = false;
+  urlInput.disabled = false;
+  
+  // Download handler
+  downloadVideoBtn.onclick = () => startDownload(videoUrl, data.author?.unique_id || 'video');
+}
+
+// Start Download with Progress
+async function startDownload(url, username) {
+  downloadVideoBtn.disabled = true;
+  downloadText.textContent = '⏳ Memproses...';
+  downloadProgress.classList.remove('hidden');
+  
+  // Simulate progress animation
+  let progress = 0;
+  const interval = setInterval(() => {
+    progress += Math.random() * 30;
+    if (progress > 90) progress = 90;
+    progressFill.style.width = progress + '%';
+  }, 200);
+  
   try {
-    // Create temporary link and trigger download
+    // Trigger download
     const a = document.createElement('a');
-    a.href = videoUrl;
-    a.download = filename || 'tiktok-video.mp4';
+    a.href = url;
+    a.download = `tiktok-${username}-${Date.now()}.mp4`;
     a.target = '_blank';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-  } catch (error) {
-    console.error('Download error:', error);
-    // Fallback: open in new tab
-    window.open(videoUrl, '_blank');
+    
+    // Complete progress
+    setTimeout(() => {
+      clearInterval(interval);
+      progressFill.style.width = '100%';
+      progressText.textContent = 'Download dimulai!';
+      downloadText.textContent = '✅ Berhasil';
+      
+      setTimeout(() => {
+        downloadProgress.classList.add('hidden');
+        downloadText.textContent = '📥 Download Lagi';
+        downloadVideoBtn.disabled = false;
+        progressFill.style.width = '0%';
+        progressText.textContent = 'Downloading...';
+      }, 2000);
+    }, 1000);
+    
+  } catch (err) {
+    clearInterval(interval);
+    downloadProgress.classList.add('hidden');
+    downloadText.textContent = '❌ Gagal';
+    setTimeout(() => {
+      downloadText.textContent = '📥 Download Video';
+      downloadVideoBtn.disabled = false;
+    }, 2000);
   }
 }
 
-// URL Validation
-function isValidTikTokUrl(url) {
-  return /^https?:\/\/(www\.)?(tiktok\.com|vm\.tiktok\.com|vt\.tiktok\.com)/i.test(url);
-}
-
-// UI State: Loading
+// UI States
 function showLoading() {
+  hideAll();
   downloadBtn.disabled = true;
   urlInput.disabled = true;
-  loadingIndicator.classList.remove('hidden');
-  resultSection.classList.add('hidden');
-  errorSection.classList.add('hidden');
+  loading.classList.remove('hidden');
 }
 
-// UI State: Display Result
-function displayResult(data) {
-  loadingIndicator.classList.add('hidden');
-  errorSection.classList.add('hidden');
-
-  const title = data.title || 'TikTok Video';
-  const author = data.author?.nickname || data.author?.unique_id || 'Unknown';
-  const thumbnail = data.cover || data.origin_cover || '';
-  const downloadUrl = data.play || data.wmplay || '';
-  const playCount = data.play_count || 0;
-  const likeCount = data.digg_count || 0;
-
-  if (!downloadUrl) {
-    showError('Video tidak tersedia untuk diunduh');
-    return;
-  }
-
-  // Generate filename
-  const filename = `tiktok-${author}-${Date.now()}.mp4`;
-
-  let html = '';
-
-  // Thumbnail
-  if (thumbnail) {
-    html += `<img src="${escapeHtml(thumbnail)}" alt="Thumbnail" class="video-thumbnail" loading="lazy" />`;
-  }
-
-  // Video Info
-  html += `
-    <div class="video-info">
-      <h2 class="video-title">${escapeHtml(title)}</h2>
-      <p class="video-author">@${escapeHtml(author)}</p>
-  `;
-
-  // Stats
-  if (playCount || likeCount) {
-    html += `<div class="video-stats">`;
-    if (playCount) html += `<span>👁️ ${formatNumber(playCount)}</span>`;
-    if (likeCount) html += `<span>❤️ ${formatNumber(likeCount)}</span>`;
-    html += `</div>`;
-  }
-
-  html += `</div>`;
-
-  // Download Button
-  html += `
-    <button class="download-link-btn" id="autoDownloadBtn">
-      📥 Download Video
-    </button>
-  `;
-
-  resultContent.innerHTML = html;
-  resultSection.classList.remove('hidden');
-
-  // Add click event for auto download
-  const autoDownloadButton = document.getElementById('autoDownloadBtn');
-  autoDownloadButton.addEventListener('click', () => {
-    autoDownloadButton.textContent = '⏳ Mengunduh...';
-    autoDownloadButton.disabled = true;
-    
-    autoDownloadVideo(downloadUrl, filename);
-    
-    setTimeout(() => {
-      autoDownloadButton.textContent = '✅ Download Dimulai!';
-      setTimeout(() => {
-        autoDownloadButton.textContent = '📥 Download Lagi';
-        autoDownloadButton.disabled = false;
-      }, 2000);
-    }, 500);
-  });
-
+function showError(msg) {
+  hideAll();
+  errorMsg.textContent = msg;
+  error.classList.remove('hidden');
   downloadBtn.disabled = false;
   urlInput.disabled = false;
 }
 
-// UI State: Show Error
-function showError(message) {
-  loadingIndicator.classList.add('hidden');
-  resultSection.classList.add('hidden');
-  errorMessage.textContent = message;
-  errorSection.classList.remove('hidden');
-  
-  downloadBtn.disabled = false;
-  urlInput.disabled = false;
+function hideAll() {
+  loading.classList.add('hidden');
+  result.classList.add('hidden');
+  error.classList.add('hidden');
+  downloadProgress.classList.add('hidden');
 }
 
-// Reset Form
-function resetForm() {
+function reset() {
   urlInput.value = '';
-  urlInput.disabled = false;
+  hideAll();
   downloadBtn.disabled = false;
-  loadingIndicator.classList.add('hidden');
-  resultSection.classList.add('hidden');
-  errorSection.classList.add('hidden');
+  urlInput.disabled = false;
   urlInput.focus();
 }
 
-// Utility: Escape HTML
-function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
-
-// Utility: Format Numbers
-function formatNumber(num) {
-  const number = parseInt(num);
-  if (isNaN(number)) return num;
-  
-  if (number >= 1000000) {
-    return (number / 1000000).toFixed(1) + 'M';
-  } else if (number >= 1000) {
-    return (number / 1000).toFixed(1) + 'K';
-  }
-  return number.toString();
+// Format Numbers
+function formatNum(num) {
+  const n = parseInt(num);
+  if (isNaN(n)) return num;
+  if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+  if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
+  return n.toString();
 }
 
 // Init
-window.addEventListener('load', () => {
-  urlInput.focus();
-});
+window.addEventListener('load', () => urlInput.focus());
