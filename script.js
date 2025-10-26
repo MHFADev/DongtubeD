@@ -222,21 +222,50 @@ function displayResult(data) {
   
   const views = data.play_count ? `👁️ ${formatNum(data.play_count)}` : '';
   const likes = data.digg_count ? `❤️ ${formatNum(data.digg_count)}` : '';
-  stats.innerHTML = (views ? `<span>${views}</span>` : '') + (likes ? `<span>${likes}</span>` : '');
+  const comments = data.comment_count ? `💬 ${formatNum(data.comment_count)}` : '';
+  const shares = data.share_count ? `🔄 ${formatNum(data.share_count)}` : '';
+  
+  const statsHtml = [views, likes, comments, shares].filter(s => s).map(s => `<span>${s}</span>`).join('');
+  stats.innerHTML = statsHtml;
   
   const videoUrl = data.play || data.wmplay || '';
+  const videoUrlHD = data.play || '';
+  const videoUrlSD = data.wmplay || '';
   
   if (!videoUrl) {
     showError('Video tidak tersedia');
     return;
   }
   
+  // Store current video data with multiple qualities
+  currentVideoData = {
+    ...data,
+    videoUrl: videoUrl,
+    videoUrlHD: videoUrlHD,
+    videoUrlSD: videoUrlSD,
+    selectedQuality: videoUrlHD ? 'HD' : 'SD'
+  };
+  
+  // Show quality selector if both qualities available
+  const qualitySelector = document.getElementById('qualitySelector');
+  if (qualitySelector) {
+    if (videoUrlHD && videoUrlSD && videoUrlHD !== videoUrlSD) {
+      qualitySelector.classList.remove('hidden');
+      updateQualityButtons();
+    } else {
+      qualitySelector.classList.add('hidden');
+    }
+  }
+  
   result.classList.remove('hidden');
   downloadBtn.disabled = false;
   urlInput.disabled = false;
   
-  // Download handler
-  downloadVideoBtn.onclick = () => startDownload(videoUrl, data.title || 'TikTok Video');
+  // Download handler with selected quality
+  downloadVideoBtn.onclick = () => {
+    const selectedUrl = currentVideoData.selectedQuality === 'HD' ? currentVideoData.videoUrlHD : currentVideoData.videoUrlSD;
+    startDownload(selectedUrl, data.title || 'TikTok Video');
+  };
 }
 
 // Start Download with Progress
@@ -248,29 +277,50 @@ async function startDownload(url, videoTitle) {
   progressText.textContent = 'Menyiapkan download...';
   
   try {
+    // Clean filename
+    const filename = sanitizeFilename(videoTitle) + '.mp4';
+    
     // Animate progress
     let progress = 0;
     const interval = setInterval(() => {
-      progress += 20;
+      progress += 15;
       if (progress > 90) progress = 90;
       progressFill.style.width = progress + '%';
-    }, 150);
+      progressText.textContent = `Memproses... ${progress}%`;
+    }, 200);
     
-    // Direct download via window.open
-    const newWindow = window.open(url, '_blank');
+    // Try download attribute approach first (works in some browsers)
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.target = '_blank';
+    link.style.display = 'none';
     
-    // Check for popup blocker
-    if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
-      clearInterval(interval);
-      throw new Error('Popup blocked - please allow popups for this site');
-    }
+    document.body.appendChild(link);
+    link.click();
     
-    // Complete progress
+    // Small delay before removing
+    setTimeout(() => {
+      document.body.removeChild(link);
+    }, 100);
+    
+    // Complete progress animation
     setTimeout(() => {
       clearInterval(interval);
       progressFill.style.width = '100%';
       progressText.textContent = 'Download dimulai!';
       downloadText.textContent = '✅ Berhasil';
+      
+      // Save to history
+      saveToHistory({
+        title: videoTitle,
+        url: url,
+        filename: filename,
+        timestamp: Date.now()
+      });
+      
+      // Show notification with instructions
+      showNotification('✅ Download dimulai!', `Video "${videoTitle}" sedang diunduh. Jika tidak otomatis, klik kanan pada video dan pilih "Save video as..."`, 'success');
       
       setTimeout(() => {
         downloadProgress.classList.add('hidden');
@@ -278,20 +328,29 @@ async function startDownload(url, videoTitle) {
         downloadVideoBtn.disabled = false;
         progressFill.style.width = '0%';
         progressText.textContent = 'Menyiapkan download...';
-      }, 2000);
-    }, 800);
+      }, 3000);
+    }, 1000);
     
   } catch (err) {
     console.error('Download error:', err);
     downloadProgress.classList.add('hidden');
     downloadText.textContent = '❌ Gagal';
     progressText.textContent = 'Download gagal';
+    showNotification('❌ Download gagal', 'Terjadi kesalahan saat mengunduh video. Coba lagi.', 'error');
     setTimeout(() => {
       downloadText.textContent = '📥 Download Video';
       downloadVideoBtn.disabled = false;
       progressFill.style.width = '0%';
     }, 2000);
   }
+}
+
+// Sanitize filename
+function sanitizeFilename(name) {
+  return name
+    .replace(/[^\w\s-]/g, '')
+    .replace(/\s+/g, '_')
+    .substring(0, 100);
 }
 
 // UI States
@@ -334,5 +393,251 @@ function formatNum(num) {
   return n.toString();
 }
 
+// ============================
+// NOTIFICATION SYSTEM
+// ============================
+
+function showNotification(title, message, type = 'success') {
+  const notification = document.createElement('div');
+  notification.className = `notification notification-${type}`;
+  notification.innerHTML = `
+    <div class="notification-content">
+      <div class="notification-title">${title}</div>
+      <div class="notification-message">${message}</div>
+    </div>
+    <button class="notification-close" onclick="this.parentElement.remove()">×</button>
+  `;
+  
+  document.body.appendChild(notification);
+  
+  // Trigger animation
+  setTimeout(() => notification.classList.add('show'), 10);
+  
+  // Auto remove after 5 seconds
+  setTimeout(() => {
+    notification.classList.remove('show');
+    setTimeout(() => notification.remove(), 300);
+  }, 5000);
+}
+
+// ============================
+// DOWNLOAD HISTORY
+// ============================
+
+function saveToHistory(download) {
+  const history = getDownloadHistory();
+  history.unshift(download);
+  
+  // Keep only last 50 downloads
+  if (history.length > 50) history.pop();
+  
+  localStorage.setItem('downloadHistory', JSON.stringify(history));
+  updateStats();
+  updateHistoryUI();
+}
+
+function getDownloadHistory() {
+  const history = localStorage.getItem('downloadHistory');
+  return history ? JSON.parse(history) : [];
+}
+
+function clearHistory() {
+  if (confirm('Hapus semua riwayat download?')) {
+    localStorage.removeItem('downloadHistory');
+    updateStats();
+    updateHistoryUI();
+    showNotification('🗑️ Riwayat dihapus', 'Semua riwayat download telah dihapus', 'success');
+  }
+}
+
+function updateHistoryUI() {
+  const historyContainer = document.getElementById('historyList');
+  const history = getDownloadHistory();
+  
+  if (!historyContainer) return;
+  
+  if (history.length === 0) {
+    historyContainer.innerHTML = '<div class="history-empty">Belum ada riwayat download</div>';
+    return;
+  }
+  
+  historyContainer.innerHTML = history.map((item, index) => `
+    <div class="history-item" data-index="${index}">
+      <div class="history-info">
+        <div class="history-title">${item.title}</div>
+        <div class="history-time">${formatTime(item.timestamp)}</div>
+      </div>
+      <button class="history-redownload" onclick="redownloadFromHistory(${index})" title="Download lagi">
+        ↻
+      </button>
+    </div>
+  `).join('');
+}
+
+async function redownloadFromHistory(index) {
+  const history = getDownloadHistory();
+  const item = history[index];
+  if (item) {
+    await startDownload(item.url, item.title);
+  }
+}
+
+function formatTime(timestamp) {
+  const date = new Date(timestamp);
+  const now = new Date();
+  const diff = now - date;
+  
+  const minutes = Math.floor(diff / 60000);
+  const hours = Math.floor(diff / 3600000);
+  const days = Math.floor(diff / 86400000);
+  
+  if (minutes < 1) return 'Baru saja';
+  if (minutes < 60) return `${minutes} menit lalu`;
+  if (hours < 24) return `${hours} jam lalu`;
+  return `${days} hari lalu`;
+}
+
+// ============================
+// DOWNLOAD STATISTICS
+// ============================
+
+function updateStats() {
+  const history = getDownloadHistory();
+  const statsCount = document.getElementById('statsCount');
+  
+  if (statsCount) {
+    statsCount.textContent = history.length;
+  }
+}
+
+// ============================
+// VIDEO PREVIEW
+// ============================
+
+let currentVideoData = null;
+
+function showVideoPreview(videoUrl, thumbnailUrl) {
+  const preview = document.getElementById('videoPreview');
+  const videoPlayer = document.getElementById('videoPlayer');
+  const videoPoster = document.getElementById('videoPoster');
+  
+  if (!preview || !videoPlayer) return;
+  
+  videoPlayer.src = videoUrl;
+  videoPlayer.poster = thumbnailUrl;
+  preview.classList.remove('hidden');
+  
+  // Auto play
+  videoPlayer.play().catch(() => {
+    // Ignore autoplay errors
+  });
+}
+
+function hideVideoPreview() {
+  const preview = document.getElementById('videoPreview');
+  const videoPlayer = document.getElementById('videoPlayer');
+  
+  if (preview && videoPlayer) {
+    videoPlayer.pause();
+    videoPlayer.src = '';
+    preview.classList.add('hidden');
+  }
+}
+
+// ============================
+// SHARE FUNCTIONALITY
+// ============================
+
+async function shareVideo() {
+  if (!currentVideoData) return;
+  
+  const shareData = {
+    title: currentVideoData.title || 'TikTok Video',
+    text: `Check out this video: ${currentVideoData.title}`,
+    url: window.location.href
+  };
+  
+  try {
+    if (navigator.share) {
+      await navigator.share(shareData);
+      showNotification('✅ Berhasil dibagikan!', 'Video telah dibagikan', 'success');
+    } else {
+      // Fallback: copy link
+      await copyVideoLink();
+    }
+  } catch (err) {
+    if (err.name !== 'AbortError') {
+      console.error('Share error:', err);
+    }
+  }
+}
+
+async function copyVideoLink() {
+  const urlInput = document.getElementById('urlInput');
+  const url = urlInput.value.trim();
+  
+  try {
+    await navigator.clipboard.writeText(url);
+    showNotification('📋 Link disalin!', 'Link video telah disalin ke clipboard', 'success');
+  } catch (err) {
+    console.error('Copy error:', err);
+    showNotification('❌ Gagal menyalin', 'Tidak dapat menyalin link', 'error');
+  }
+}
+
+// ============================
+// QUALITY SELECTION
+// ============================
+
+function selectQuality(quality) {
+  if (!currentVideoData) return;
+  
+  currentVideoData.selectedQuality = quality;
+  updateQualityButtons();
+  
+  // Update video preview if open
+  const videoPlayer = document.getElementById('videoPlayer');
+  if (videoPlayer && videoPlayer.src) {
+    const newUrl = quality === 'HD' ? currentVideoData.videoUrlHD : currentVideoData.videoUrlSD;
+    videoPlayer.src = newUrl;
+  }
+}
+
+function updateQualityButtons() {
+  const hdBtn = document.getElementById('qualityHD');
+  const sdBtn = document.getElementById('qualitySD');
+  
+  if (!hdBtn || !sdBtn || !currentVideoData) return;
+  
+  if (currentVideoData.selectedQuality === 'HD') {
+    hdBtn.classList.add('active');
+    sdBtn.classList.remove('active');
+  } else {
+    sdBtn.classList.add('active');
+    hdBtn.classList.remove('active');
+  }
+}
+
+// ============================
+// TOGGLE SECTIONS
+// ============================
+
+function toggleHistory() {
+  const historySection = document.getElementById('historySection');
+  if (historySection) {
+    historySection.classList.toggle('hidden');
+    if (!historySection.classList.contains('hidden')) {
+      updateHistoryUI();
+    }
+  }
+}
+
+// ============================
+// INITIALIZATION
+// ============================
+
 // Focus input on load
-setTimeout(() => urlInput.focus(), 100);
+setTimeout(() => {
+  urlInput.focus();
+  updateStats();
+}, 100);

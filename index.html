@@ -16,6 +16,17 @@
   <!-- Main Container -->
   <div class="container">
     
+    <!-- Statistics Bar -->
+    <div class="stats-bar">
+      <div class="stat-item">
+        <div class="stat-label">Total Downloads</div>
+        <div class="stat-value" id="statsCount">0</div>
+      </div>
+      <button class="history-toggle-btn" onclick="toggleHistory()" title="Lihat Riwayat">
+        📜 Riwayat
+      </button>
+    </div>
+
     <!-- Main Card -->
     <div class="main-card">
       <!-- Logo and Title -->
@@ -51,6 +62,33 @@
           <p id="author" class="author"></p>
           <div id="stats" class="stats"></div>
         </div>
+        
+        <!-- Quality Selector -->
+        <div id="qualitySelector" class="quality-selector hidden">
+          <div class="quality-label">Pilih Kualitas:</div>
+          <div class="quality-buttons">
+            <button id="qualityHD" class="quality-btn active" onclick="selectQuality('HD')">
+              HD
+            </button>
+            <button id="qualitySD" class="quality-btn" onclick="selectQuality('SD')">
+              SD
+            </button>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+          <button class="btn-action" onclick="showVideoPreview(currentVideoData.videoUrl, currentVideoData.cover)" title="Preview Video">
+            ▶️ Preview
+          </button>
+          <button class="btn-action" onclick="shareVideo()" title="Bagikan">
+            🔗 Share
+          </button>
+          <button class="btn-action" onclick="copyVideoLink()" title="Salin Link">
+            📋 Copy
+          </button>
+        </div>
+
         <button id="downloadVideoBtn" class="btn-download-video">
           <span id="downloadText">📥 Download Video</span>
         </button>
@@ -71,6 +109,28 @@
       </div>
     </div>
 
+    <!-- Download History Section -->
+    <div id="historySection" class="history-section hidden">
+      <div class="history-header">
+        <h3>📜 Riwayat Download</h3>
+        <button class="btn-clear-history" onclick="clearHistory()">🗑️ Hapus</button>
+      </div>
+      <div id="historyList" class="history-list">
+        <div class="history-empty">Belum ada riwayat download</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Video Preview Modal -->
+  <div id="videoPreview" class="video-preview-modal hidden">
+    <div class="video-preview-overlay" onclick="hideVideoPreview()"></div>
+    <div class="video-preview-content">
+      <button class="video-preview-close" onclick="hideVideoPreview()">×</button>
+      <video id="videoPlayer" class="video-player" controls autoplay loop>
+        <source type="video/mp4">
+      </video>
+    </div>
   </div>
 
   <!-- Professional Footer -->
