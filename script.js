@@ -244,31 +244,26 @@ async function startDownload(url, videoTitle) {
   downloadVideoBtn.disabled = true;
   downloadText.textContent = '⏳ Memproses...';
   downloadProgress.classList.remove('hidden');
-  
-  // Simulate progress animation
-  let progress = 0;
-  const interval = setInterval(() => {
-    progress += Math.random() * 30;
-    if (progress > 90) progress = 90;
-    progressFill.style.width = progress + '%';
-  }, 200);
+  progressFill.style.width = '0%';
+  progressText.textContent = 'Menyiapkan download...';
   
   try {
-    // Sanitize filename - remove invalid characters
-    const sanitizedTitle = videoTitle
-      .replace(/[/\\?%*:|"<>]/g, '-')
-      .replace(/\s+/g, ' ')
-      .trim()
-      .substring(0, 100);
+    // Animate progress
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += 20;
+      if (progress > 90) progress = 90;
+      progressFill.style.width = progress + '%';
+    }, 150);
     
-    // Trigger download
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${sanitizedTitle}.mp4`;
-    a.target = '_blank';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    // Direct download via window.open
+    const newWindow = window.open(url, '_blank');
+    
+    // Check for popup blocker
+    if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+      clearInterval(interval);
+      throw new Error('Popup blocked - please allow popups for this site');
+    }
     
     // Complete progress
     setTimeout(() => {
@@ -282,17 +277,19 @@ async function startDownload(url, videoTitle) {
         downloadText.textContent = '📥 Download Lagi';
         downloadVideoBtn.disabled = false;
         progressFill.style.width = '0%';
-        progressText.textContent = 'Downloading...';
+        progressText.textContent = 'Menyiapkan download...';
       }, 2000);
-    }, 1000);
+    }, 800);
     
   } catch (err) {
-    clearInterval(interval);
+    console.error('Download error:', err);
     downloadProgress.classList.add('hidden');
     downloadText.textContent = '❌ Gagal';
+    progressText.textContent = 'Download gagal';
     setTimeout(() => {
       downloadText.textContent = '📥 Download Video';
       downloadVideoBtn.disabled = false;
+      progressFill.style.width = '0%';
     }, 2000);
   }
 }

@@ -1,11 +1,28 @@
-# TikTok Video Downloader
+# Dongtube Downloader
 
 ## Overview
-A frontend-only TikTok video downloader web application built with pure HTML, CSS, and JavaScript. The app uses a public API to fetch TikTok video data and provides download links to users in an elegant dark-mode interface.
+A frontend-only TikTok video downloader web application with professional dark-mode UI featuring 3D animated background. Built with pure HTML, CSS, and JavaScript, using Dongtube API for video fetching.
 
 **Current State:** Fully functional and deployed on Replit
 
 **Last Updated:** October 26, 2025
+
+## Recent Changes
+
+### October 26, 2025
+1. **Logo Enhancement:**
+   - Increased logo size from 80px to 120px for better visibility
+   - Added gradient border (yellow-gold) for premium look
+   - Implemented multi-layer glow effects and shadow depth
+   - Enhanced floating animation with subtle rotation
+   - Made fully responsive with breakpoints for tablet (100px), mobile (90px), and small mobile (80px)
+   - Added hover blur glow effect behind logo
+
+2. **Download Functionality:**
+   - Simplified download method to use direct window.open() for reliability
+   - Added popup blocker detection and error handling
+   - Maintained smooth progress bar animation and UI feedback
+   - Video opens in new tab and browser handles download automatically
 
 ## Project Architecture
 
@@ -20,17 +37,39 @@ A frontend-only TikTok video downloader web application built with pure HTML, CS
 
 ### Technology Stack
 - **Frontend:** Pure HTML5, CSS3, JavaScript (ES6+)
+- **3D Graphics:** Three.js for animated background (with CSS fallback)
 - **API:** https://www.dongtube.my.id/api/d/tiktok (public endpoint)
 - **Server:** Python HTTP server (port 5000)
 - **Fonts:** Google Fonts (Poppins)
 
 ### Key Features
-1. **Dark Mode UI:** Gradient background (#0d0d0d → #1a1a1a) with yellow (#ffcc00) accents
-2. **Responsive Design:** Mobile-first approach, works on all screen sizes
-3. **State Management:** Loading, success, and error states
-4. **Accessibility:** Keyboard navigation, ARIA labels, semantic HTML
-5. **Animations:** Smooth transitions and fade-in effects
-6. **Security:** XSS protection via HTML escaping
+1. **Professional UI:** 
+   - Dark mode with gradient border cards
+   - 120px professional logo with gradient border and glow effects
+   - 3D animated background using Three.js (geometric wireframe shapes)
+   - CSS fallback for browsers without WebGL support
+   
+2. **Responsive Design:** 
+   - Mobile-first approach
+   - Breakpoints for tablet (768px), mobile (600px), small mobile (400px)
+   - Logo scales proportionally on all devices
+   
+3. **Download Experience:**
+   - Direct download via window.open in new tab
+   - Real-time progress animation
+   - Popup blocker detection
+   - Clear success/error feedback
+   
+4. **Animations:** 
+   - Logo floating animation with rotation
+   - Card entry animations
+   - Smooth transitions and hover effects
+   - Progress bar with gradient fill
+   
+5. **Security:** 
+   - XSS protection via HTML escaping
+   - Popup blocker handling
+   - URL validation
 
 ## API Integration
 
@@ -68,8 +107,9 @@ The API returns JSON with video metadata including:
 - **Body:** 0.95-1rem (400 weight)
 
 ### Responsive Breakpoints
-- Mobile: < 600px
-- Small Mobile: < 400px
+- Tablet: ≤ 768px (logo 100px, title 2rem)
+- Mobile: ≤ 600px (logo 90px, title 1.8rem)
+- Small Mobile: ≤ 400px (logo 80px, title 1.6rem)
 
 ## Known Limitations
 
