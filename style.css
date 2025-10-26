@@ -10,10 +10,12 @@ body {
   color: #fff;
   min-height: 100vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   padding: 20px;
-  overflow: hidden;
+  padding-top: 60px;
+  overflow-x: hidden;
 }
 
 /* Three.js Canvas Background */
@@ -293,19 +295,68 @@ body {
   color: #000;
 }
 
-/* Credit Footer */
-.credit {
-  text-align: center;
-  margin-top: 25px;
-  padding: 15px;
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.5);
+/* Professional Footer */
+.footer {
+  position: relative;
+  z-index: 1;
+  margin-top: 60px;
+  padding: 40px 20px 20px;
+  background: rgba(20, 20, 20, 0.85);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 204, 0, 0.3);
   animation: fadeIn 1s ease 0.5s backwards;
 }
 
-.credit .highlight {
+.footer-content {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.footer-section h4 {
   color: #ffcc00;
+  font-size: 1rem;
   font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.footer-section p {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+.footer-section ul {
+  list-style: none;
+}
+
+.footer-section ul li {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.85rem;
+  margin-bottom: 8px;
+  padding-left: 15px;
+  position: relative;
+}
+
+.footer-section ul li::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  color: #ffcc00;
+}
+
+.footer-bottom {
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 204, 0, 0.2);
+}
+
+.footer-bottom p {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.8rem;
 }
 
 /* Utility */
@@ -336,7 +387,17 @@ body {
     width: 100%;
   }
 
-  .credit {
+  .footer {
+    margin-top: 40px;
+    padding: 30px 20px 15px;
+  }
+
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
+
+  .footer-bottom p {
     font-size: 0.75rem;
   }
 }
