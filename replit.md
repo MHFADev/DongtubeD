@@ -76,7 +76,9 @@ A frontend-only TikTok video downloader web application with professional dark-m
 ├── index.html       # Main HTML structure
 ├── style.css        # All styling (dark theme with yellow accents)
 ├── script.js        # Client-side logic and API integration
-└── replit.md        # This documentation file
+├── logo.jpg         # Application logo (120px)
+├── README.md        # GitHub documentation (public-facing)
+└── replit.md        # Technical documentation (this file)
 ```
 
 ### Technology Stack
