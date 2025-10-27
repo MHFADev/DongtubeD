@@ -2,13 +2,15 @@
 
 <div align="center">
 
+![Dongtube Logo](logo.jpg)
+
 **TikTok Video Downloader dengan UI Modern dan 3D Background**
 
-[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://replit.com)
 [![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML)
 [![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/CSS)
 [![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 [![Three.js](https://img.shields.io/badge/Three.js-000000?logo=three.js&logoColor=white)](https://threejs.org/)
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 </div>
 
@@ -16,7 +18,7 @@
 
 ## 📋 Deskripsi
 
-**Dongtube Downloader** adalah aplikasi web modern untuk mengunduh video TikTok dengan mudah. Aplikasi ini menggunakan **pure HTML, CSS, dan JavaScript** tanpa framework, dilengkapi dengan 3D animated background menggunakan Three.js dan desain UI dark-mode yang profesional.
+**Dongtube Downloader** adalah aplikasi web modern untuk mengunduh video TikTok dengan mudah dan cepat. Aplikasi ini dibangun menggunakan **pure HTML, CSS, dan JavaScript** tanpa framework apapun, dilengkapi dengan 3D animated background menggunakan Three.js dan desain UI dark-mode yang profesional dengan aksen yellow-gold.
 
 ### ✨ Fitur Unggulan
 
@@ -33,11 +35,29 @@
 
 ---
 
-## 🚀 Demo
+## 🚀 Preview
 
-![Dongtube Downloader Preview](https://via.placeholder.com/800x450/0a0a0a/ffcc00?text=Dongtube+Downloader)
+<div align="center">
 
-**Live Demo:** [Klik di sini untuk mencoba](https://your-replit-url.repl.co)
+### 🖥️ Main Interface - Dark Theme with 3D Background
+
+![Dongtube Downloader Interface](logo.jpg)
+
+*Screenshot website dengan dark theme professional, 3D animated background, dan UI modern*
+
+</div>
+
+### 🎨 Tampilan Utama Features:
+- **🌙 Dark Theme** - Gradient background (#0d0d0d → #1a1a1a) dengan border cards berwarna gold
+- **✨ Animated Logo** - Logo 120px dengan gradient border, glow effect, dan floating animation
+- **🎨 3D Background** - Geometric shapes beranimasi menggunakan Three.js (fallback CSS untuk non-WebGL)
+- **📊 Statistics Bar** - Menampilkan total downloads dengan badge counter yang menarik
+- **📝 Input Field** - Paste TikTok URL dengan placeholder yang jelas dan border glow saat focus
+- **🔘 Action Buttons** - Download, Preview Video, Share, dan Copy Link dengan hover effects
+- **📜 Download History** - List 50 downloads terakhir dengan timestamp dan redownload option
+- **🎬 Quality Selector** - Toggle HD/SD dengan active state indicator
+- **🔔 Notifications** - Toast notifications slide dari kanan untuk user feedback
+- **📱 Responsive** - Optimal di semua ukuran layar (desktop, tablet, mobile)
 
 ---
 
@@ -70,17 +90,19 @@
 
 1. Clone repository ini:
 ```bash
-git clone https://github.com/username/dongtube-downloader.git
+git clone https://github.com/YourUsername/dongtube-downloader.git
 cd dongtube-downloader
 ```
 
 2. Buka `index.html` langsung di browser modern (Chrome, Firefox, Safari, Edge)
+   - Tidak perlu instalasi tambahan
+   - Langsung jalan tanpa konfigurasi
 
 ### Method 2: Dengan Local Server
 
 1. Clone repository:
 ```bash
-git clone https://github.com/username/dongtube-downloader.git
+git clone https://github.com/YourUsername/dongtube-downloader.git
 cd dongtube-downloader
 ```
 
@@ -280,13 +302,20 @@ Tested dan kompatibel dengan:
 
 ## 🤝 Contributing
 
-Contributions are welcome! Silakan:
+Kontribusi sangat diterima! Untuk berkontribusi:
 
-1. Fork repository ini
-2. Create feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
-5. Open Pull Request
+1. **Fork** repository ini
+2. **Clone** fork Anda: `git clone https://github.com/YourUsername/dongtube-downloader.git`
+3. **Create branch** untuk fitur baru: `git checkout -b feature/NamaFitur`
+4. **Commit** perubahan: `git commit -m 'Menambahkan fitur: NamaFitur'`
+5. **Push** ke branch: `git push origin feature/NamaFitur`
+6. **Open Pull Request** ke repository utama
+
+### Guidelines Kontribusi:
+- Ikuti code style yang sudah ada
+- Test fitur baru di berbagai browser
+- Update dokumentasi jika perlu
+- Pastikan tidak ada console errors
 
 ---
 
@@ -305,12 +334,12 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ---
 
-## 📧 Contact
+## 📧 Support & Issues
 
-Jika ada pertanyaan atau saran, silakan buka issue di repository ini atau hubungi melalui:
+Jika menemukan bug atau ada saran untuk improvement, silakan buka issue di repository ini:
 
-- GitHub Issues: [Create Issue](https://github.com/username/dongtube-downloader/issues)
-- Email: your-email@example.com
+- **GitHub Issues**: [Report Bug atau Request Feature](https://github.com/YourUsername/dongtube-downloader/issues)
+- **Discussions**: Untuk pertanyaan umum, gunakan GitHub Discussions
 
 ---
 
