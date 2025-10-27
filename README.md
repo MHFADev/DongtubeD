@@ -41,9 +41,9 @@
 
 ### 🖥️ Main Interface - Dark Theme with 3D Background
 
-![Dongtube Downloader Interface](logo.jpg)
+![Dongtube Downloader Interface](screenshot.png)
 
-*Screenshot website dengan dark theme professional, 3D animated background, dan UI modern*
+*Tampilan utama Dongtube Downloader dengan dark theme professional, 3D animated background, dan UI modern*
 
 </div>
 
